@@ -872,9 +872,9 @@ function renderPlaying() {
   if (!el) return;
 
   const elapsed   = r.startedAt ? Math.max(0, Date.now() - r.startedAt) : 0;
-  const remaining = Math.max(0, Math.ceil((120000 - elapsed) / 1000));
-  const pct       = Math.max(0, Math.min(100, (remaining / 120) * 100));
-  const urgent    = remaining <= 20;
+  const remaining = Math.max(0, Math.ceil((250000 - elapsed) / 1000));
+  const pct       = Math.max(0, Math.min(100, (remaining / 250) * 100));
+  const urgent    = remaining <= 30;
   const level     = r.revealedLevel || 1;
 
   const levelLabel = level === 1
@@ -968,9 +968,9 @@ function startRoundTimer() {
     if (!r || !r.startedAt) return;
 
     const elapsed   = Math.max(0, Date.now() - r.startedAt);
-    const remaining = Math.max(0, Math.ceil((120000 - elapsed) / 1000));
-    const pct       = Math.max(0, Math.min(100, (remaining / 120) * 100));
-    const urgent    = remaining <= 20;
+    const remaining = Math.max(0, Math.ceil((250000 - elapsed) / 1000));
+    const pct       = Math.max(0, Math.min(100, (remaining / 250) * 100));
+    const urgent    = remaining <= 30;
 
     // Update timer display
     const numEl = document.getElementById('timer-num');
@@ -990,11 +990,11 @@ function startRoundTimer() {
         reveal2Pending = true;
         roomRef.child('currentRound/revealedLevel').set(2);
       }
-      if (elapsed >= 90000 && (r.revealedLevel || 1) < 3 && !reveal3Pending) {
+      if (elapsed >= 130000 && (r.revealedLevel || 1) < 3 && !reveal3Pending) {
         reveal3Pending = true;
         roomRef.child('currentRound/revealedLevel').set(3);
       }
-      if (elapsed >= 120000 && !timeoutPending) {
+      if (elapsed >= 250000 && !timeoutPending) {
         timeoutPending = true;
         endRound(null);
       }
