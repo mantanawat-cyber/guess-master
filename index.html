@@ -872,9 +872,9 @@ function renderPlaying() {
   if (!el) return;
 
   const elapsed   = r.startedAt ? Math.max(0, Date.now() - r.startedAt) : 0;
-  const remaining = Math.max(0, Math.ceil((250000 - elapsed) / 1000));
-  const pct       = Math.max(0, Math.min(100, (remaining / 250) * 100));
-  const urgent    = remaining <= 30;
+  const remaining = Math.max(0, Math.ceil((150000 - elapsed) / 1000));
+  const pct       = Math.max(0, Math.min(100, (remaining / 150) * 100));
+  const urgent    = remaining <= 20;
   const level     = r.revealedLevel || 1;
 
   const levelLabel = level === 1
@@ -949,7 +949,8 @@ function renderPlaying() {
         <div style="font-family:'Kanit',sans-serif;font-weight:700">${players[r.setterId]?.name||'?'}</div>
       </div>
       ${hintRows}
-      <div style="text-align:center;padding:16px 0;color:var(--muted);font-size:.88rem">
+      <div id="next-hint-info" style="text-align:center;margin:10px 0 4px;font-size:.82rem;color:var(--gold);font-weight:600;min-height:1.2em"></div>
+      <div style="text-align:center;padding:8px 0 16px;color:var(--muted);font-size:.88rem">
         ตะโกนตอบสดๆ ในวง!<br>
         <span style="font-size:.78rem">ถ้าถูก Setter กดยืนยัน</span>
       </div>
@@ -968,9 +969,9 @@ function startRoundTimer() {
     if (!r || !r.startedAt) return;
 
     const elapsed   = Math.max(0, Date.now() - r.startedAt);
-    const remaining = Math.max(0, Math.ceil((250000 - elapsed) / 1000));
-    const pct       = Math.max(0, Math.min(100, (remaining / 250) * 100));
-    const urgent    = remaining <= 30;
+    const remaining = Math.max(0, Math.ceil((150000 - elapsed) / 1000));
+    const pct       = Math.max(0, Math.min(100, (remaining / 150) * 100));
+    const urgent    = remaining <= 20;
 
     // Update timer display
     const numEl = document.getElementById('timer-num');
@@ -984,17 +985,32 @@ function startRoundTimer() {
       barEl.className = 'timer-bar' + (urgent ? ' urgent' : '');
     }
 
+    // Update next-hint countdown for guessers
+    const nextHintEl = document.getElementById('next-hint-info');
+    if (nextHintEl) {
+      const lv = r.revealedLevel || 1;
+      if (lv === 1) {
+        const nxt = Math.max(0, Math.ceil((30000 - elapsed) / 1000));
+        nextHintEl.textContent = nxt > 0 ? `⏳ คำใบ้ที่ 2 เปิดใน ${nxt}s` : '';
+      } else if (lv === 2) {
+        const nxt = Math.max(0, Math.ceil((90000 - elapsed) / 1000));
+        nextHintEl.textContent = nxt > 0 ? `⏳ คำใบ้ที่ 3 เปิดใน ${nxt}s` : '';
+      } else {
+        nextHintEl.textContent = '';
+      }
+    }
+
     // Host: auto-reveal hints
     if (isHost) {
       if (elapsed >= 30000 && (r.revealedLevel || 1) < 2 && !reveal2Pending) {
         reveal2Pending = true;
         roomRef.child('currentRound/revealedLevel').set(2);
       }
-      if (elapsed >= 130000 && (r.revealedLevel || 1) < 3 && !reveal3Pending) {
+      if (elapsed >= 90000 && (r.revealedLevel || 1) < 3 && !reveal3Pending) {
         reveal3Pending = true;
         roomRef.child('currentRound/revealedLevel').set(3);
       }
-      if (elapsed >= 250000 && !timeoutPending) {
+      if (elapsed >= 150000 && !timeoutPending) {
         timeoutPending = true;
         endRound(null);
       }
