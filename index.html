@@ -872,8 +872,8 @@ function renderPlaying() {
   if (!el) return;
 
   const elapsed   = r.startedAt ? Math.max(0, Date.now() - r.startedAt) : 0;
-  const remaining = Math.max(0, Math.ceil((150000 - elapsed) / 1000));
-  const pct       = Math.max(0, Math.min(100, (remaining / 150) * 100));
+  const remaining = Math.max(0, Math.ceil((240000 - elapsed) / 1000));
+  const pct       = Math.max(0, Math.min(100, (remaining / 240) * 100));
   const urgent    = remaining <= 20;
   const level     = r.revealedLevel || 1;
 
@@ -969,8 +969,8 @@ function startRoundTimer() {
     if (!r || !r.startedAt) return;
 
     const elapsed   = Math.max(0, Date.now() - r.startedAt);
-    const remaining = Math.max(0, Math.ceil((150000 - elapsed) / 1000));
-    const pct       = Math.max(0, Math.min(100, (remaining / 150) * 100));
+    const remaining = Math.max(0, Math.ceil((240000 - elapsed) / 1000));
+    const pct       = Math.max(0, Math.min(100, (remaining / 240) * 100));
     const urgent    = remaining <= 20;
 
     // Update timer display
@@ -990,10 +990,10 @@ function startRoundTimer() {
     if (nextHintEl) {
       const lv = r.revealedLevel || 1;
       if (lv === 1) {
-        const nxt = Math.max(0, Math.ceil((30000 - elapsed) / 1000));
+        const nxt = Math.max(0, Math.ceil((40000 - elapsed) / 1000));
         nextHintEl.textContent = nxt > 0 ? `⏳ คำใบ้ที่ 2 เปิดใน ${nxt}s` : '';
       } else if (lv === 2) {
-        const nxt = Math.max(0, Math.ceil((90000 - elapsed) / 1000));
+        const nxt = Math.max(0, Math.ceil((120000 - elapsed) / 1000));
         nextHintEl.textContent = nxt > 0 ? `⏳ คำใบ้ที่ 3 เปิดใน ${nxt}s` : '';
       } else {
         nextHintEl.textContent = '';
@@ -1002,15 +1002,15 @@ function startRoundTimer() {
 
     // Host: auto-reveal hints
     if (isHost) {
-      if (elapsed >= 30000 && (r.revealedLevel || 1) < 2 && !reveal2Pending) {
+      if (elapsed >= 40000 && (r.revealedLevel || 1) < 2 && !reveal2Pending) {
         reveal2Pending = true;
         roomRef.child('currentRound/revealedLevel').set(2);
       }
-      if (elapsed >= 90000 && (r.revealedLevel || 1) < 3 && !reveal3Pending) {
+      if (elapsed >= 120000 && (r.revealedLevel || 1) < 3 && !reveal3Pending) {
         reveal3Pending = true;
         roomRef.child('currentRound/revealedLevel').set(3);
       }
-      if (elapsed >= 150000 && !timeoutPending) {
+      if (elapsed >= 240000 && !timeoutPending) {
         timeoutPending = true;
         endRound(null);
       }
